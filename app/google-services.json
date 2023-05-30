@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "12115990412",
+    "firebase_url": "https://test-6556d-default-rtdb.firebaseio.com",
+    "project_id": "test-6556d",
+    "storage_bucket": "test-6556d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12115990412:android:80c2ae566f1c1cafa1e8a9",
+        "android_client_info": {
+          "package_name": "com.vinnovations.testuploader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12115990412-vjsjfo2kv0e9jqb878u6sl2qu368d4he.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA68z3jpkllDlW_QkQNzF2v-5iVl2Vup_s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12115990412-vjsjfo2kv0e9jqb878u6sl2qu368d4he.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
