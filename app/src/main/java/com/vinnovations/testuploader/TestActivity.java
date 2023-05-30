@@ -40,6 +40,7 @@ public class TestActivity extends AppCompatActivity {
     String testName;
     // Inside your activity or fragment
     private static final int RC_IMAGE_PICK = 1;
+    Uri selectedImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +113,7 @@ public class TestActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_IMAGE_PICK && resultCode == RESULT_OK && data != null) {
-            Uri selectedImageUri = data.getData();
+            selectedImageUri = data.getData();
             // Use the selectedImageUri to do further processing with the image
             Glide.with(this)
                     .load(selectedImageUri)
@@ -124,25 +125,28 @@ public class TestActivity extends AppCompatActivity {
     }
 
     void uploadImage(){
-        imageView.setDrawingCacheEnabled(true);
-        imageView.buildDrawingCache();
-        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+//        imageView.setDrawingCacheEnabled(true);
+//        imageView.buildDrawingCache();
+//        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
 //        String filename = "image.jpg";
         StorageReference imageRef = storageRef.child(testName +"/" + "image"+count+".jpg");
+//        StorageReference imageRef = storageRef.child("images/" + "image.jpg");
 
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] data = baos.toByteArray();
+        // doubt
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+//        byte[] data = baos.toByteArray();
 
-        UploadTask uploadTask = imageRef.putBytes(data);
+        UploadTask uploadTask = imageRef.putFile(selectedImageUri);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Toast.makeText(TestActivity.this,"image uploaded",Toast.LENGTH_SHORT).show();
+                imageView.setImageResource(R.drawable.ic_baseline_add_24);
                 // Image uploaded successfully
                 // You can retrieve the download URL for the image using taskSnapshot.getDownloadUrl()
             }
