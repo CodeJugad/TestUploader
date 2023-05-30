@@ -59,9 +59,6 @@ public class TestActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // use it to get image from gallery
-//                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(intent, RC_IMAGE_PICK);
 
                 // use it to get image from file manager
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -82,7 +79,6 @@ public class TestActivity extends AppCompatActivity {
                 database = FirebaseDatabase.getInstance();
                 myRef = database.getReference().child("all-tests").child(testName).child(String.valueOf(count));
 
-//                myRef.setValue("Hello, World!");
             }
         });
 
@@ -100,8 +96,6 @@ public class TestActivity extends AppCompatActivity {
 //                myRef.child("image").
                 uploadImage();
                 myRef.child("answer").setValue(answer);
-                count++;
-                myRef = database.getReference().child("all-tests").child(testName).child(String.valueOf(count));
 
             }
         });
@@ -125,30 +119,39 @@ public class TestActivity extends AppCompatActivity {
     }
 
     void uploadImage(){
-//        imageView.setDrawingCacheEnabled(true);
-//        imageView.buildDrawingCache();
-//        Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
         StorageReference storageRef = storage.getReference();
 
-//        String filename = "image.jpg";
-        StorageReference imageRef = storageRef.child(testName +"/" + "image"+count+".jpg");
-//        StorageReference imageRef = storageRef.child("images/" + "image.jpg");
-
-        // doubt
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-//        byte[] data = baos.toByteArray();
+      StorageReference imageRef = storageRef.child(testName +"/" + "image"+count+".jpg");
 
         UploadTask uploadTask = imageRef.putFile(selectedImageUri);
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                Toast.makeText(TestActivity.this,"image uploaded",Toast.LENGTH_SHORT).show();
+                Toast.makeText(TestActivity.this,"image uploaded, Please wait a bit!",Toast.LENGTH_SHORT).show();
                 imageView.setImageResource(R.drawable.ic_baseline_add_24);
                 // Image uploaded successfully
                 // You can retrieve the download URL for the image using taskSnapshot.getDownloadUrl()
+                imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri downloadUri) {
+                                    // Store the download URL in the Realtime Database
+                                    myRef.child("imageUrl").setValue(downloadUri.toString());
+                                    Toast.makeText(TestActivity.this,"Now Proceed for other!",Toast.LENGTH_SHORT).show();
+                                    count++;
+                                    myRef = database.getReference().child("all-tests").child(testName).child(String.valueOf(count));
+//                                    myRef.child("images").child(imageKey).child("imageUrl").setValue(downloadUri.toString());
+//                                    myRef.child("image").setValue(downloadUri.toString());
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                               @Override
+                               public void onFailure(@NonNull Exception e) {
+                               // Handle the failure case
+                               Toast.makeText(TestActivity.this,"image uri Failed",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -159,33 +162,6 @@ public class TestActivity extends AppCompatActivity {
         });
 
 
-
-//        // Now you have the image Uri, you can proceed with uploading it to Firebase Realtime Database
-//            String imageKey = FirebaseDatabase.getInstance().getReference().child("images").push().getKey();
-//            StorageReference imageRef = FirebaseStorage.getInstance().getReference().child("images/" + imageKey + ".jpg");
-//
-//            // Upload the image file to Firebase Storage
-//            imageRef.putFile(imageUri)
-//                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            // Image uploaded successfully, get the download URL
-//                            imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                                @Override
-//                                public void onSuccess(Uri downloadUri) {
-//                                    // Store the download URL in the Realtime Database
-//                                    myRef.child("images").child(imageKey).child("imageUrl").setValue(downloadUri.toString());
-////                                    myRef.child("image").setValue(downloadUri.toString());
-//                                }
-//                            });
-//                        }
-//                    })
-//                    .addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            // Handle the failure case
-//                        }
-//                    });
 
     }
 }
