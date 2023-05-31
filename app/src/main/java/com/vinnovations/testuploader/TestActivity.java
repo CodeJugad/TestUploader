@@ -35,7 +35,7 @@ public class TestActivity extends AppCompatActivity {
     RadioGroup radioAnswer;
     FirebaseDatabase database;
     DatabaseReference myRef;
-    int count = 1;
+    int count = 0;
     String answer;
     String testName;
     // Inside your activity or fragment
@@ -77,6 +77,7 @@ public class TestActivity extends AppCompatActivity {
                 testName = String.valueOf(edtTestName.getText());
                 // Write a message to the database
                 database = FirebaseDatabase.getInstance();
+                database.getReference().child("all-tests").child(testName).setValue(testName);
                 myRef = database.getReference().child("all-tests").child(testName).child(String.valueOf(count));
 
             }
